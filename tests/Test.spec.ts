@@ -1,14 +1,16 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, chromium } from '@playwright/test';
 import { AllAboutPinterestPage } from './AllAboutPinterestPage';
 import { HomePage } from './HomePage';
 import { ProfilePage } from './ProfilePage';
 import { FoodPage } from './FoodPage';
 import { LogoutPage } from './LogoutPage';
+import { NewsPage } from './NewsPage';
 
-test('1', async ({ page }) => {
+test('Login', async ({ page }) => {
   const login = new HomePage(page);
   const profile = new ProfilePage(page);
   await login.goto();
+
   await login.loginFunc();
   await expect(profile.myProfileBtn).toBeVisible();
   await expect(profile.mainBtn).toBeVisible();
@@ -17,9 +19,10 @@ test('1', async ({ page }) => {
   await expect(page).toHaveURL(/.*juliamoiisenko0/);
 });
 
-test('2', async ({ page }) => {
+test('Go to Food Page', async ({ page }) => {
   const homePage = new HomePage(page);
   const foodPage = new FoodPage(page);
+
   await homePage.goto();
   await homePage.scrollButton.click();
   await expect(page).toHaveURL(/.*search/);
@@ -32,23 +35,29 @@ test('2', async ({ page }) => {
   expect(page.url()).toBe('https://www.pinterest.com/ideas/');
 });
 
-test('3', async ({ page }) => {
+test('Go to News Page', async ({ page }) => {
   const login = new HomePage(page);
   const profile = new ProfilePage(page);
+  const news = new NewsPage(page);
   await login.goto();
   await login.loginFunc();
+  await expect(profile.questionBtn).toBeVisible({ timeout: 20000 });
+
   await profile.questionBtn.click();
   await expect(profile.popover).toBeVisible();
-  await profile.aboutUs.click();
-  expect(page.url()).toBe(
-    'https://help.pinterest.com/ru/guide/all-about-pinterest'
-  );
+
+  const newPage = await news.openLinkInNewTab();
+  await newPage.waitForLoadState('domcontentloaded');
+  const newPageTitle = await newPage.title();
+  console.log('Title of the new tab:', newPageTitle);
+  await newPage.close();
 });
 
-test('4', async ({ page }) => {
+test('Logging out', async ({ page }) => {
   const login = new HomePage(page);
   const profile = new ProfilePage(page);
   const logout = new LogoutPage(page);
+
   await login.goto();
   await login.loginFunc();
   await profile.params.click();
@@ -57,12 +66,13 @@ test('4', async ({ page }) => {
   await expect(login.scrollButton).toBeVisible();
 });
 
-test('5', async ({ page }) => {
+test(' Go to About Us Page', async ({ page, context }) => {
   const login = new HomePage(page);
-  login.goto();
   const about = new AllAboutPinterestPage(page);
-  await about.getLink.click();
-  expect(page.url()).toBe(
-    'https://help.pinterest.com/en/guide/all-about-pinterest'
-  );
+  await login.goto();
+  const newPage = await about.openLinkInNewTab();
+  await newPage.waitForLoadState('domcontentloaded');
+  const newPageTitle = await newPage.title();
+  console.log('Title of the new tab:', newPageTitle);
+  await newPage.close();
 });

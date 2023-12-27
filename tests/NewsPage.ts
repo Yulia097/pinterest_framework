@@ -1,20 +1,20 @@
 import { Locator, Page } from '@playwright/test';
 
-export class AllAboutPinterestPage {
+export class NewsPage {
   readonly page: Page;
   readonly getLink: Locator;
   readonly title: Locator;
 
   constructor(page: Page) {
     this.page = page; // Ensure you store the page reference
-    this.getLink = page.getByRole('link', { name: 'About ; Opens a new tab' });
+    this.getLink = page.getByRole('link', {
+      name: 'Новости ; Открывает новую вкладку'
+    });
     this.title = page.locator('#title');
   }
 
   async goto() {
-    await this.page.goto(
-      'https://help.pinterest.com/en/guide/all-about-pinterest'
-    );
+    await this.page.goto('https://newsroom.pinterest.com/');
   }
 
   async openLinkInNewTab() {
