@@ -7,6 +7,7 @@ export class RegistrationPage {
   readonly getPassword: Locator;
   readonly getBirthDate: Locator;
   readonly getCreateBtn: Locator;
+  readonly getLanguage: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -17,9 +18,9 @@ export class RegistrationPage {
       .locator('[data-test-id="signup-birthdate-field"]')
       .getByLabel('Birthdate');
     this.getCreateBtn = page.getByLabel('Continue creating your');
+    this.getLanguage = page.locator('#newUserLanguage');
   }
-  // wg21672rw;
-  // foxmargaret4811@gmail.com
+ 
   async goto() {
     await this.page.goto('https://pinterest.com/');
   }

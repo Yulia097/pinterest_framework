@@ -9,6 +9,7 @@ import { RegistrationPage } from './RegistationPage';
 import { WelcomePage } from './WelcomePage';
 import { MessagesPage } from './Messages';
 import { NotificationPage } from './NotificationsPage';
+import { FeedSettingsePage } from './Feed Settings';
 
 test('Login', async ({ page }) => {
   const login = new HomePage(page);
@@ -52,9 +53,12 @@ test('Go to News Page', async ({ page }) => {
 
   const newPage = await news.openLinkInNewTab();
   await newPage.waitForLoadState('domcontentloaded');
+  const expectedTitleSubstring = "Pinterest Predicts 2024: Today's 'cheat sheet' for tomorrow's trend";
   const newPageTitle = await newPage.title();
+  expect(newPageTitle).toContain(expectedTitleSubstring);
   console.log('Title of the new tab:', newPageTitle);
   await newPage.close();
+
 });
 
 test('Logging out', async ({ page }) => {
@@ -76,7 +80,9 @@ test(' Go to About Us Page', async ({ page, context }) => {
   await login.goto();
   const newPage = await about.openLinkInNewTab();
   await newPage.waitForLoadState('domcontentloaded');
+  const expectedTitleSubstring = "Get back to inspiration";
   const newPageTitle = await newPage.title();
+  expect(newPageTitle).toContain(expectedTitleSubstring);
   console.log('Title of the new tab:', newPageTitle);
   await newPage.close();
 });
@@ -88,8 +94,6 @@ test('Registration', async ({ page }) => {
   await registration.signUpFunc();
 
   await expect(welcome.welcomePopUp).toBeVisible();
-  await welcome.femaleCheckbox.check();
-  await welcome.nextButton.click();
 });
 
 test('Go to Messages page', async ({ page }) => {
@@ -113,4 +117,77 @@ test('Go to Notifications page', async ({ page }) => {
   await notification.updatesParams.click();
   await notification.deleteUpdates.click();
   await expect(notification.deletedMessage).toBeVisible();
+});
+
+test('Writing the message to the no user. Error message should be shown', async ({ page }) => {
+  const login = new HomePage(page);
+  const message = new MessagesPage(page);
+  await login.goto();
+  await login.loginFunc();
+  await message.getPic.click();
+  await expect(message.writeMessage).toBeVisible();
+  await message.writeMessage.click();
+  await message.messageText.fill("Kate");
+  await expect(message.sendMessage).toBeVisible();
+  await message.sendMessage.click();
+  await expect(message.errorPopUp).toBeVisible();
+});
+
+test('Sending the message to the specific user.', async ({ page }) => {
+  const login = new HomePage(page);
+  const message = new MessagesPage(page);
+  await login.goto();
+  await login.loginFunc();
+  await message.getPic.click();
+  await expect(message.writeMessage).toBeVisible();
+  await message.search.click();
+  await message.search.fill('Cake');
+  await expect(message.cakeBtn).toBeVisible();
+  await message.cakeBtn.click();
+  await message.messageText.fill("Tasty cakes");
+  await expect(message.sendMessage).toBeVisible();
+  await message.sendMessage.click();
+  await expect(message.startConv).toBeVisible();
+
+});
+
+test("Adding the info in the user's profile", async ({ page }) => {
+  const login = new HomePage(page);
+  const profile = new ProfilePage(page);
+  await login.goto();
+  await login.loginFunc();
+  await profile.myProfileBtn.click();
+  await profile.changeProfile.click();
+  await profile.descriptionBtn.fill('This is my channel');
+  await profile.saveChanges.click();
+  await expect(profile.saveChanges).toBeDisabled();
+
+});
+
+
+test("Unsubsribing the channel", async ({ page }) => {
+  const login = new HomePage(page);
+  const profile = new ProfilePage(page);
+  const feed = new FeedSettingsePage(page);
+  await login.goto();
+  await login.loginFunc();
+  await profile.params.click();
+  await feed.feed.click();
+  await feed.subscriptions.click();
+  await expect(feed.unsubscribtions).toBeVisible()
+
+});
+
+test('Decline the message', async ({ page }) => {
+  const login = new HomePage(page);
+  const message = new MessagesPage(page);
+  await login.goto();
+
+  await login.loginFunc();
+  await message.getPic.click();
+  await expect(message.writeMessage).toBeVisible();
+  await message.cakeBtn.click();
+  await message.messageText.fill("Tasty cakes");
+  await message.declineMsg.click();
+  await expect(message.writeMessage).toBeVisible();
 });

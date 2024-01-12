@@ -9,6 +9,10 @@ export class ProfilePage {
   readonly aboutUs: Locator;
   readonly popover: Locator;
   readonly params: Locator;
+  readonly changeProfile: Locator;
+  readonly descriptionBtn: Locator;
+  readonly saveChanges: Locator;
+  readonly settingsLine: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -21,6 +25,11 @@ export class ProfilePage {
     });
     this.popover = page.getByLabel('Popover');
     this.params = page.getByLabel('Аккаунты и другие параметры');
+    this.changeProfile =page.getByRole('button', { name: 'Изменить профиль' })
+    this.descriptionBtn =page.getByPlaceholder('Расскажите свою историю')
+    this.saveChanges = page.getByRole('button', { name: 'Сохранить' })
+    this.settingsLine = page.locator('div[@id="HeaderAccountOptionsFlyout-item-4"]/div/a/div/div[1]');
+  
   }
 
   async goto() {
