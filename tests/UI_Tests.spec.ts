@@ -1,15 +1,15 @@
 import { test, expect, chromium } from '@playwright/test';
-import { AllAboutPinterestPage } from './AllAboutPinterestPage';
-import { HomePage } from './HomePage';
-import { ProfilePage } from './ProfilePage';
-import { FoodPage } from './FoodPage';
-import { LogoutPage } from './LogoutPage';
-import { NewsPage } from './NewsPage';
-import { RegistrationPage } from './RegistationPage';
-import { WelcomePage } from './WelcomePage';
-import { MessagesPage } from './Messages';
-import { NotificationPage } from './NotificationsPage';
-import { FeedSettingsePage } from './Feed Settings';
+import { HomePage } from '../tests-examples/page-examples/HomePage';
+import { ProfilePage } from '../tests-examples/page-examples/ProfilePage';
+import { FoodPage } from '../tests-examples/page-examples/FoodPage';
+import { LogoutPage } from '../tests-examples/page-examples/LogoutPage';
+import { NewsPage } from '../tests-examples/page-examples/NewsPage';
+import { RegistrationPage } from '../tests-examples/page-examples/RegistationPage';
+import { WelcomePage } from '../tests-examples/page-examples/WelcomePage';
+import { MessagesPage } from '../tests-examples/page-examples/Messages';
+import { NotificationPage } from '../tests-examples/page-examples/NotificationsPage';
+import { FeedSettingsePage } from '../tests-examples/page-examples/Feed Settings';
+import { AllAboutPinterestPage } from '../tests-examples/page-examples/AllAboutPinterestPage'
 
 test('Login', async ({ page }) => {
   const login = new HomePage(page);
