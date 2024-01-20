@@ -1,15 +1,18 @@
 import { test, expect, chromium } from '@playwright/test';
-import { AllAboutPinterestPage } from './AllAboutPinterestPage';
-import { HomePage } from './HomePage';
-import { ProfilePage } from './ProfilePage';
-import { FoodPage } from './FoodPage';
-import { LogoutPage } from './LogoutPage';
-import { NewsPage } from './NewsPage';
-import { RegistrationPage } from './RegistationPage';
-import { WelcomePage } from './WelcomePage';
-import { MessagesPage } from './Messages';
-import { NotificationPage } from './NotificationsPage';
-import { FeedSettingsePage } from './Feed Settings';
+import { HomePage } from '../tests-examples/page-examples/HomePage';
+import { ProfilePage } from '../tests-examples/page-examples/ProfilePage';
+import { FoodPage } from '../tests-examples/page-examples/FoodPage';
+import { LogoutPage } from '../tests-examples/page-examples/LogoutPage';
+import { NewsPage } from '../tests-examples/page-examples/NewsPage';
+import { RegistrationPage } from '../tests-examples/page-examples/RegistationPage';
+import { WelcomePage } from '../tests-examples/page-examples/WelcomePage';
+import { MessagesPage } from '../tests-examples/page-examples/Messages';
+import { NotificationPage } from '../tests-examples/page-examples/NotificationsPage';
+import { FeedSettingsePage } from '../tests-examples/page-examples/Feed Settings';
+import { AllAboutPinterestPage } from '../tests-examples/page-examples/AllAboutPinterestPage'
+import { AccountSettings } from '../tests-examples/page-examples/AccountSettengs';
+import { ProfileVisibility } from '../tests-examples/ProfileVisibility';
+
 
 test('Login', async ({ page }) => {
   const login = new HomePage(page);
@@ -181,8 +184,8 @@ test("Unsubsribing the channel", async ({ page }) => {
 test('Decline the message', async ({ page }) => {
   const login = new HomePage(page);
   const message = new MessagesPage(page);
-  await login.goto();
 
+  await login.goto();
   await login.loginFunc();
   await message.getPic.click();
   await expect(message.writeMessage).toBeVisible();
@@ -190,4 +193,71 @@ test('Decline the message', async ({ page }) => {
   await message.messageText.fill("Tasty cakes");
   await message.declineMsg.click();
   await expect(message.writeMessage).toBeVisible();
+});
+
+test('Dropdown Test', async ({ page }) => {
+  const login = new HomePage(page);
+  const accountSettings = new AccountSettings(page);
+  const profile = new ProfilePage(page);
+
+  await login.goto();
+  await login.loginFunc();
+  await profile.params.click();
+  await expect(profile.settingsLine).toBeVisible();
+  await profile.settingsLine.click();
+  await accountSettings.accountManagement.click();
+
+  const selectedCountry = 'Италия';
+  await accountSettings.selectCountry(selectedCountry);
+
+  const selectedOptionText = await page.evaluate(() => {
+    const selectedOption = document.querySelector('option[selected]');
+    return selectedOption?.textContent?.trim();
+
+});
+expect(selectedOptionText).toBe(selectedCountry);
+});
+
+
+test('Checkboxes for privacy', async ({ page }) => {
+  const login = new HomePage(page);
+  const profile = new ProfilePage(page);
+  const profileVisibility = new ProfileVisibility(page)
+
+  await login.goto();
+  await login.loginFunc();
+  await profile.params.click();
+  await expect(profile.settingsLine).toBeVisible();
+  await profile.settingsLine.click();
+  await profileVisibility.profileVisiblity.click();
+await profileVisibility.privateProfileSwitch.check();
+await profileVisibility.notNowBtn.click();
+expect(profileVisibility.privateProfileSwitch).toBeChecked();
+await profileVisibility.searchPrivacySwitch.check();
+await profileVisibility.iUnderstandBtn.click();
+expect(profileVisibility.searchPrivacySwitch).toBeChecked();
+await profileVisibility.saveBtn.click();
+await expect(profileVisibility.saveBtn).toBeDisabled();
+});
+
+
+test('Edit notifications', async ({ page }) => {
+  const login = new HomePage(page);
+  const profile = new ProfilePage(page);
+  const notificationPage = new NotificationPage(page)
+
+  await login.goto();
+  await login.loginFunc();
+  await profile.params.click();
+  await expect(profile.settingsLine).toBeVisible();
+  await profile.settingsLine.click();
+  
+  await notificationPage.notificationsPage.click();
+  await notificationPage.changeNotifications.click();
+  await notificationPage.mentions.uncheck();
+  await notificationPage.comments.uncheck();
+
+  expect(notificationPage.comments).not.toBeChecked();
+  expect(notificationPage.mentions).not.toBeChecked();
+  
 });
