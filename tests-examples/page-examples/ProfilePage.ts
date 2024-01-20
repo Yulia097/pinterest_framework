@@ -28,7 +28,7 @@ export class ProfilePage {
     this.changeProfile =page.getByRole('button', { name: 'Изменить профиль' })
     this.descriptionBtn =page.getByPlaceholder('Расскажите свою историю')
     this.saveChanges = page.getByRole('button', { name: 'Сохранить' })
-    this.settingsLine = page.locator('div[@id="HeaderAccountOptionsFlyout-item-4"]/div/a/div/div[1]');
+    this.settingsLine = page.getByRole('link', { name: 'Настройки' })
   
   }
 
