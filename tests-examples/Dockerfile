@@ -1,3 +1,3 @@
 FROM node
 
-CMD ["echo", "123"]
+CMD ["echo", "Hello, Docker!"]
