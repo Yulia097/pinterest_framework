@@ -211,7 +211,8 @@ test('Dropdown Test', async ({ page }) => {
   await accountSettings.selectCountry(selectedCountry);
 
   const selectedOptionText = await page.evaluate(() => {
-    const selectedOption = document.querySelector('option[selected]');
+    const selectedOption = document.querySelectorпшеммкомсмс
+    ('option[selected]');
     return selectedOption?.textContent?.trim();
 
 });
